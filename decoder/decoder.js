@@ -167,8 +167,8 @@ function mbusDecoder(bytes) {
         // Find definition
         var def = -1;
         for (var i = 0; i < definitions.length; i++) {
-            var definition = definitions[i];
-            if ((definition.base <= vif) && (vif < (definition.base + definition.size))) {
+            var tmp = definitions[i];
+            if ((tmp.base <= vif) && (vif < (tmp.base + tmp.size))) {
                 def = i;
                 break;
             }
@@ -176,6 +176,7 @@ function mbusDecoder(bytes) {
         if (def < 0) {
             throw "Unsupported VIF: " + vif;
         }
+        var definition = definitions[def];
 
         // Check buffer overflow
         if (index + len > bytes.length) {
@@ -187,9 +188,6 @@ function mbusDecoder(bytes) {
             ? bcd2dec(bytes.slice(index, index+len))
             : bin2dec(bytes.slice(index, index+len));
         index += len;
-
-        // Get definition
-        var definition = definitions[def];
 
         // Scaled value
         var scalar = definition.scalar + vif - definition.base;
