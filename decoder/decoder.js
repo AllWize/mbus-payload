@@ -149,7 +149,7 @@ function mbusDecoder(bytes) {
 
         // Decode DIF
         var dif = bytes[index++];
-        var bcd = ((dif & 0x08) == 0x08);
+        var bcd = ((dif & 0x08) === 0x08);
         var len = (dif & 0x07);
         if ((len < 1) || (4 < len)) {
             throw "Unsupported coding: " + (dif & 0x0F);
@@ -158,16 +158,17 @@ function mbusDecoder(bytes) {
         // Get VIF(E)
         var vif = 0;
         do {
-            if (index == bytes.length) {
+            if (index === bytes.length) {
                 throw "Buffer overflow";
             }
             vif = (vif << 8) | bytes[index++];
-        } while ((vif & 0x80) == 0x80);
+        } while ((vif & 0x80) === 0x80);
 
         // Find definition
         var def = -1;
         for (var i = 0; i < definitions.length; i++) {
-            if ((definitions[i].base <= vif) && (vif < (definitions[i].base + definitions[i].size))) {
+            var definition = definitions[i];
+            if ((definition.base <= vif) && (vif < (definition.base + definition.size))) {
                 def = i;
                 break;
             }
@@ -181,22 +182,25 @@ function mbusDecoder(bytes) {
             throw "Buffer overflow";
         }
 
-        // read value
+        // Read value
         var value = bcd
             ? bcd2dec(bytes.slice(index, index+len))
             : bin2dec(bytes.slice(index, index+len));
         index += len;
 
-        // scaled value
-        var scalar = definitions[def].scalar + vif - definitions[def].base;
+        // Get definition
+        var definition = definitions[def];
+
+        // Scaled value
+        var scalar = definition.scalar + vif - definition.base;
         var scaled = value * Math.pow(10, scalar);
 
         // Add field
         fields.push({
             "index": fields.length + 1,
             "vif": vif,
-            "name": definitions[def].name,
-            "units":  definitions[def].units,
+            "name": definition.name,
+            "units":  definition.units,
             "value": scaled
         });
 
