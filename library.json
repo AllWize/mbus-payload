@@ -1,0 +1,21 @@
+{
+    "name": "MBUSPayload",
+    "keywords": "mbus,wmbus,dif,vif,wize",
+    "description": "MBUS application layer payload encoder and decoder",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/allwize/mbus-payload.git"
+    },
+    "version": "0.1.0",
+    "license": "LGPL-3.0",
+    "frameworks": "arduino",
+    "platforms": ["atmelavr", "samd", "esp8266"],
+    "authors": {
+        "name": "Xose Perez",
+        "email": "xose@allwize.io",
+        "maintainer": true
+    },
+    "examples": [
+        "examples/*/*.ino"
+    ]
+}
