@@ -76,8 +76,8 @@ def get_version(base, version_h="library.properties"):
     return version
 
 TEMPLATES = {
-    "![travis]": "[![travis](https://travis-ci.org/{USER}/{REPO}.svg?branch={BRANCH})]" \
-        "(https://travis-ci.org/{USER}/{REPO})\n",
+    "![travis]": "[![travis](https://travis-ci.com/{USER}/{REPO}.svg?branch={BRANCH})]" \
+        "(https://travis-ci.com/{USER}/{REPO})\n",
     "![version]": "[![version](https://img.shields.io/badge/version-{VERSION}-brightgreen.svg)](CHANGELOG.md)\n",
     "![branch]": "[![branch](https://img.shields.io/badge/branch-{BRANCH}-orange.svg)]" \
         "(https://github.org/{USER}/{REPO}/tree/{BRANCH}/)\n",
