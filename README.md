@@ -11,7 +11,7 @@ The `MBUSPayload` class enables Arduino devices to encode data with using the MB
 
 ### Class: `MBUSPayload`
 
-Include and instantiate the MBUSPayload class. The constructor takes the size of the allocated buffer. Depending on the LoRa frequency plan and data rate used, the maximum payload varies, the default is 32 bytes.
+Include and instantiate the MBUSPayload class. The constructor takes the size of the allocated buffer.
 
 ```c
 #include <MBUSPayload.h>
