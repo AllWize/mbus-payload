@@ -143,7 +143,7 @@ uint8_t MBUSPayload::addField(uint8_t code, float value) {
   }
 
   // Special case fot value == 0
-  if (value < 1e-8) {
+  if (value < ARDUINO_FLOAT_MIN) {
     return addField(code, 0, value);
   }
 
@@ -160,16 +160,18 @@ uint8_t MBUSPayload::addField(uint8_t code, float value) {
 
   // If there is a fractional part, move up 8-int_size positions
   float frac = value - int(value);
-  if (frac > 1e-8) {
-    scalar = int_size - 8;
-    for (int8_t i=scalar; i<0; i++) value *= 10;
+  if (frac > ARDUINO_FLOAT_MIN) {
+    scalar = int_size - ARDUINO_FLOAT_DECIMALS; 
+    for (int8_t i=scalar; i<0; i++) {
+      value *= 10.0;
+    }
   }
 
   // Check validity when no decimals
   bool valid = (_getVIF(code, scalar) != 0xFF);
 
   // Now move down 
-  uint32_t scaled = value;
+  uint32_t scaled = round(value);
   while ((scaled % 10) == 0) {
     scalar++;
     scaled /= 10;

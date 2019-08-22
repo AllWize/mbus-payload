@@ -266,6 +266,12 @@ testF(EncoderTest, Add_Field_Compact_Zero) {
     compare(sizeof(expected), expected);
 }
 
+testF(EncoderTest, Add_Field_Compact_Infinite_Decimals) {
+    uint8_t expected[] = { 0x01, 0x69, 0x67 };
+    mbuspayload->addField(MBUS_CODE_PRESSURE_BAR, 1.02999999999999999); // 1.03 bars
+    compare(sizeof(expected), expected);
+}
+
 // -----------------------------------------------------------------------------
 testF(DecoderTest, Number_1) {
     uint8_t buffer[] = { 0x01, 0xFB, 0x01, 0xC8};
@@ -311,6 +317,7 @@ testF(DecoderTest, Decode_8bcd) {
     uint8_t buffer[] = { 0x0C, 0x13, 0x13, 0x20, 0x00, 0x00};
     compare(buffer, sizeof(buffer), 1, MBUS_CODE_VOLUME_M3, -3, 2013);
 }
+
 // -----------------------------------------------------------------------------
 // Main
 // -----------------------------------------------------------------------------
