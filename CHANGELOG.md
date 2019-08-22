@@ -3,6 +3,11 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.1.2] 2019-08-22
+
+### Fixed
+- Fixed float maths for 8bit microcontrollers
+
 ## [0.1.1] 2019-08-18
 
 ### Fixed
