@@ -136,12 +136,12 @@ const char * getCodeUnits(uint8_t code);
 
 Returns the last error ID, once returned the error is reset to OK. Possible error values are:
 
-* `MBUS_ERROR_OK`: No error
-* `MBUS_ERROR_OVERFLOW`: Buffer cannot hold the requested data, try increasing the buffer size. When decoding: incomming buffer size is wrong.
-* `MBUS_ERROR_UNSUPPORTED_CODING`: The library only supports 1,2,3 and 4 bytes integers and 2,4,6 or 8 BCD.
-* `MBUS_ERROR_UNSUPPORTED_RANGE`: Couldn't encode the provided combination of code and scale, try changing the scale of your value.
-* `MBUS_ERROR_UNSUPPORTED_VIF`: When decoding: the VIF is not supported and thus it cannot be decoded.
-* `MBUS_ERROR_NEGATIVE_VALUE`: Library only supports non-negative values at the moment.
+* `MBUS_ERROR::NO_ERROR`: No error
+* `MBUS_ERROR::BUFFER_OVERFLOW`: Buffer cannot hold the requested data, try increasing the buffer size. When decoding: incomming buffer size is wrong.
+* `MBUS_ERROR::UNSUPPORTED_CODING`: The library only supports 1,2,3 and 4 bytes integers and 2,4,6 or 8 BCD.
+* `MBUS_ERROR::UNSUPPORTED_RANGE`: Couldn't encode the provided combination of code and scale, try changing the scale of your value.
+* `MBUS_ERROR::UNSUPPORTED_VIF`: When decoding: the VIF is not supported and thus it cannot be decoded.
+* `MBUS_ERROR::NEGATIVE_VALUE`: Library only supports non-negative values at the moment.
 
 ```c
 uint8_t getError(void);

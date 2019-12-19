@@ -150,43 +150,43 @@ testF(EncoderTest, Empty) {
 
 testF(EncoderTest, Unsupported_Coding) {
     mbuspayload->addRaw(0x0F, 0x06, 14);
-    assertEqual(MBUS_ERROR_UNSUPPORTED_CODING, mbuspayload->getError());
-    assertEqual(MBUS_ERROR_OK, mbuspayload->getError());
+    assertEqual(MBUS_ERROR::UNSUPPORTED_CODING, mbuspayload->getError());
+    assertEqual(MBUS_ERROR::NO_ERROR, mbuspayload->getError());
 }
 
 testF(EncoderTest, Add_Raw_8bit) {
     uint8_t expected[] = { 0x01, 0x06, 0x0E};
-    mbuspayload->addRaw(MBUS_CODING_8BIT, 0x06, 14);
+    mbuspayload->addRaw(MBUS_CODING::BIT_8, 0x06, 14);
     compare(sizeof(expected), expected);
 }
 
 testF(EncoderTest, Add_Raw_16bit) {
     uint8_t expected[] = { 0x02, 0x06, 0x0E, 0x00};
-    mbuspayload->addRaw(MBUS_CODING_16BIT, 0x06, 14);
+    mbuspayload->addRaw(MBUS_CODING::BIT_16, 0x06, 14);
     compare(sizeof(expected), expected);
 }
 
 testF(EncoderTest, Add_Raw_32bit) {
     uint8_t expected[] = { 0x04, 0x06, 0x0E, 0x00, 0x00, 0x00};
-    mbuspayload->addRaw(MBUS_CODING_32BIT, 0x06, 14);
+    mbuspayload->addRaw(MBUS_CODING::BIT_32, 0x06, 14);
     compare(sizeof(expected), expected);
 }
 
 testF(EncoderTest, Add_Raw_2bcd) {
     uint8_t expected[] = { 0x09, 0x06, 0x14};
-    mbuspayload->addRaw(MBUS_CODING_2BCD, 0x06, 14);
+    mbuspayload->addRaw(MBUS_CODING::BCD_2, 0x06, 14);
     compare(sizeof(expected), expected);
 }
 
 testF(EncoderTest, Add_Raw_8bcd) {
     uint8_t expected[] = { 0x0C, 0x13, 0x13, 0x20, 0x00, 0x00};
-    mbuspayload->addRaw(MBUS_CODING_8BCD, 0x13, 2013);
+    mbuspayload->addRaw(MBUS_CODING::BCD_8, 0x13, 2013);
     compare(sizeof(expected), expected);
 }
 
 testF(EncoderTest, Add_Raw_VIFE) {
     uint8_t expected[] = { 0x01, 0xFB, 0x8C, 0x74, 0x0E};
-    mbuspayload->addRaw(MBUS_CODING_8BIT, 0xFB8C74, 14);
+    mbuspayload->addRaw(MBUS_CODING::BIT_8, 0xFB8C74, 14);
     compare(sizeof(expected), expected);
 }
 
@@ -195,127 +195,127 @@ testF(EncoderTest, Find_Definition) {
 }
 
 testF(EncoderTest, Get_VIF) {
-    assertEqual((uint32_t) 0xFF  , mbuspayload->getVIF(MBUS_CODE_ENERGY_WH, -4));
-    assertEqual((uint32_t) 0x00  , mbuspayload->getVIF(MBUS_CODE_ENERGY_WH, -3));
-    assertEqual((uint32_t) 0x03  , mbuspayload->getVIF(MBUS_CODE_ENERGY_WH,  0));
-    assertEqual((uint32_t) 0x06  , mbuspayload->getVIF(MBUS_CODE_ENERGY_WH,  3));
-    assertEqual((uint32_t) 0x07  , mbuspayload->getVIF(MBUS_CODE_ENERGY_WH,  4));
-    assertEqual((uint32_t) 0xFB00, mbuspayload->getVIF(MBUS_CODE_ENERGY_WH,  5));
-    assertEqual((uint32_t) 0xFB01, mbuspayload->getVIF(MBUS_CODE_ENERGY_WH,  6));
-    assertEqual((uint32_t) 0xFF  , mbuspayload->getVIF(MBUS_CODE_ENERGY_WH,  7));
+    assertEqual((uint32_t) 0xFF  , mbuspayload->getVIF(MBUS_CODE::ENERGY_WH, -4));
+    assertEqual((uint32_t) 0x00  , mbuspayload->getVIF(MBUS_CODE::ENERGY_WH, -3));
+    assertEqual((uint32_t) 0x03  , mbuspayload->getVIF(MBUS_CODE::ENERGY_WH,  0));
+    assertEqual((uint32_t) 0x06  , mbuspayload->getVIF(MBUS_CODE::ENERGY_WH,  3));
+    assertEqual((uint32_t) 0x07  , mbuspayload->getVIF(MBUS_CODE::ENERGY_WH,  4));
+    assertEqual((uint32_t) 0xFB00, mbuspayload->getVIF(MBUS_CODE::ENERGY_WH,  5));
+    assertEqual((uint32_t) 0xFB01, mbuspayload->getVIF(MBUS_CODE::ENERGY_WH,  6));
+    assertEqual((uint32_t) 0xFF  , mbuspayload->getVIF(MBUS_CODE::ENERGY_WH,  7));
 }
 
 testF(EncoderTest, Add_Field_1a) {
     uint8_t expected[] = { 0x02, 0x06, 0x78, 0x05 };
-    mbuspayload->addField(MBUS_CODE_ENERGY_WH, 3, 1400); // 1400 kWh
+    mbuspayload->addField(MBUS_CODE::ENERGY_WH, 3, 1400); // 1400 kWh
     compare(sizeof(expected), expected);
 }
 
 testF(EncoderTest, Add_Field_1b) {
     uint8_t expected[] = { 0x01, 0x07, 0x8C };
-    mbuspayload->addField(MBUS_CODE_ENERGY_WH, 4, 140); // 1400 kWh
+    mbuspayload->addField(MBUS_CODE::ENERGY_WH, 4, 140); // 1400 kWh
     compare(sizeof(expected), expected);
 }
 
 testF(EncoderTest, Add_Field_2) {
     uint8_t expected[] = { 0x01, 0xFB, 0x01, 0xC8 };
-    mbuspayload->addField(MBUS_CODE_ENERGY_WH, 6, 200); // 200 MWh
+    mbuspayload->addField(MBUS_CODE::ENERGY_WH, 6, 200); // 200 MWh
     compare(sizeof(expected), expected);
 }
 
 testF(EncoderTest, Add_Field_3) {
     uint8_t expected[] = { 0x01, 0x0D, 0x24 };
-    mbuspayload->addField(MBUS_CODE_ENERGY_J, 5, 36); // 3.6 MJ
+    mbuspayload->addField(MBUS_CODE::ENERGY_J, 5, 36); // 3.6 MJ
     compare(sizeof(expected), expected);
 }
 
 testF(EncoderTest, Add_Field_4) {
     uint8_t expected[] = { 0x01, 0x13, 0x39 };
-    mbuspayload->addField(MBUS_CODE_VOLUME_M3, -3, 57); // 57 l
+    mbuspayload->addField(MBUS_CODE::VOLUME_M3, -3, 57); // 57 l
     compare(sizeof(expected), expected);
 }
 
 testF(EncoderTest, MultiField) {
     uint8_t expected[] = { 0x01, 0x13, 0x39, 0x01, 0x0D, 0x24 };
-    mbuspayload->addField(MBUS_CODE_VOLUME_M3, -3, 57); // 57 l
-    mbuspayload->addField(MBUS_CODE_ENERGY_J, 5, 36); // 3.6 MJ
+    mbuspayload->addField(MBUS_CODE::VOLUME_M3, -3, 57); // 57 l
+    mbuspayload->addField(MBUS_CODE::ENERGY_J, 5, 36); // 3.6 MJ
     compare(sizeof(expected), expected);
 }
 
 testF(EncoderTest, Add_Field_Compact_1) {
     uint8_t expected[] = { 0x01, 0x13, 0x39 };
-    mbuspayload->addField(MBUS_CODE_VOLUME_M3, 0.057); // 57 l
+    mbuspayload->addField(MBUS_CODE::VOLUME_M3, 0.057); // 57 l
     compare(sizeof(expected), expected);
 }
 
 testF(EncoderTest, Add_Field_Compact_2) {
     uint8_t expected[] = { 0x01, 0x0D, 0x24 };
-    mbuspayload->addField(MBUS_CODE_ENERGY_J, 36e5); // 3.6 MJ
+    mbuspayload->addField(MBUS_CODE::ENERGY_J, 36e5); // 3.6 MJ
     compare(sizeof(expected), expected);
 }
 
 testF(EncoderTest, Add_Field_Compact_3) {
     uint8_t expected[] = { 0x02, 0x2A, 0x06, 0x05 };
-    mbuspayload->addField(MBUS_CODE_POWER_W, 128.6); // 128.6 W
+    mbuspayload->addField(MBUS_CODE::POWER_W, 128.6); // 128.6 W
     compare(sizeof(expected), expected);
 }
 
 testF(EncoderTest, Add_Field_Compact_Zero) {
     uint8_t expected[] = { 0x01, 0x2B, 0x00 };
-    mbuspayload->addField(MBUS_CODE_POWER_W, 0); // 0 W
+    mbuspayload->addField(MBUS_CODE::POWER_W, 0); // 0 W
     compare(sizeof(expected), expected);
 }
 
 testF(EncoderTest, Add_Field_Compact_Infinite_Decimals) {
     uint8_t expected[] = { 0x01, 0x69, 0x67 };
-    mbuspayload->addField(MBUS_CODE_PRESSURE_BAR, 1.02999999999999999); // 1.03 bars
+    mbuspayload->addField(MBUS_CODE::PRESSURE_BAR, 1.02999999999999999); // 1.03 bars
     compare(sizeof(expected), expected);
 }
 
 // -----------------------------------------------------------------------------
 testF(DecoderTest, Number_1) {
     uint8_t buffer[] = { 0x01, 0xFB, 0x01, 0xC8};
-    compare(buffer, sizeof(buffer), 1, MBUS_CODE_ENERGY_WH, 6, 200);
+    compare(buffer, sizeof(buffer), 1, MBUS_CODE::ENERGY_WH, 6, 200);
 }
 
 testF(DecoderTest, Number_2) {
     uint8_t buffer[] = { 0x01, 0x13, 0x39 };
-    compare(buffer, sizeof(buffer), 1, MBUS_CODE_VOLUME_M3, -3, 57);
+    compare(buffer, sizeof(buffer), 1, MBUS_CODE::VOLUME_M3, -3, 57);
 }
 
 testF(DecoderTest, Number_3) {
     uint8_t buffer[] = { 0x02, 0x06, 0x78, 0x05 };
-    compare(buffer, sizeof(buffer), 1, MBUS_CODE_ENERGY_WH, 3, 1400);
+    compare(buffer, sizeof(buffer), 1, MBUS_CODE::ENERGY_WH, 3, 1400);
 }
 
 testF(DecoderTest, Number_4) {
     uint8_t buffer[] = { 0x01, 0x07, 0x8C };
-    compare(buffer, sizeof(buffer), 1, MBUS_CODE_ENERGY_WH, 4, 140);
+    compare(buffer, sizeof(buffer), 1, MBUS_CODE::ENERGY_WH, 4, 140);
 }
 
 testF(DecoderTest, Number_5) {
     uint8_t buffer[] = { 0x01, 0xFB, 0x01, 0xC8 };
-    compare(buffer, sizeof(buffer), 1, MBUS_CODE_ENERGY_WH, 6, 200);
+    compare(buffer, sizeof(buffer), 1, MBUS_CODE::ENERGY_WH, 6, 200);
 }
 
 testF(DecoderTest, Number_6) {
     uint8_t buffer[] = { 0x01, 0x2B, 0x00 };
-    compare(buffer, sizeof(buffer), 1, MBUS_CODE_POWER_W, 0, 0);
+    compare(buffer, sizeof(buffer), 1, MBUS_CODE::POWER_W, 0, 0);
 }
 
 testF(DecoderTest, MultiField) {
     uint8_t buffer[] = { 0x01, 0x13, 0x39, 0x01, 0x0D, 0x24 };
-    compare(buffer, sizeof(buffer), 2, MBUS_CODE_VOLUME_M3, -3, 57);
+    compare(buffer, sizeof(buffer), 2, MBUS_CODE::VOLUME_M3, -3, 57);
 }
 
 testF(DecoderTest, Decode_2bcd) {
     uint8_t buffer[] = { 0x09, 0x06, 0x14};
-    compare(buffer, sizeof(buffer), 1, MBUS_CODE_ENERGY_WH, 3, 14);
+    compare(buffer, sizeof(buffer), 1, MBUS_CODE::ENERGY_WH, 3, 14);
 }
 
 testF(DecoderTest, Decode_8bcd) {
     uint8_t buffer[] = { 0x0C, 0x13, 0x13, 0x20, 0x00, 0x00};
-    compare(buffer, sizeof(buffer), 1, MBUS_CODE_VOLUME_M3, -3, 2013);
+    compare(buffer, sizeof(buffer), 1, MBUS_CODE::VOLUME_M3, -3, 2013);
 }
 
 // -----------------------------------------------------------------------------

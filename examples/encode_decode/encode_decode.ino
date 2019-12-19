@@ -46,10 +46,10 @@ void setup() {
     MBUSPayload payload(32);
     
     PC_SERIAL.println("Adding fields...");
-    payload.addField(MBUS_CODE_ACCESS_NUMBER, 103);
-    payload.addField(MBUS_CODE_EXTERNAL_TEMPERATURE_C, 22.5);
-    payload.addField(MBUS_CODE_POWER_W, 1204);
-    payload.addField(MBUS_CODE_VOLUME_M3, -3, 57);
+    payload.addField(MBUS_CODE::ACCESS_NUMBER, 103);
+    payload.addField(MBUS_CODE::EXTERNAL_TEMPERATURE_C, 22.5);
+    payload.addField(MBUS_CODE::POWER_W, 1204);
+    payload.addField(MBUS_CODE::VOLUME_M3, -3, 57);
 
     PC_SERIAL.print("Current buffer size: "); PC_SERIAL.println(payload.getSize());
     PC_SERIAL.print("Current buffer contents: ");
@@ -71,7 +71,9 @@ void setup() {
     for (uint8_t i=0; i<fields; i++) {
         float value = root[i]["value_scaled"].as<float>();
         uint8_t code = root[i]["code"].as<int>();
-        PC_SERIAL.print("Field "); PC_SERIAL.print(i+1); PC_SERIAL.print(": ");
+        PC_SERIAL.print("Field "); PC_SERIAL.print(i+1); 
+        PC_SERIAL.print(" ("); PC_SERIAL.print((char *) payload.getCodeName(code)); 
+        PC_SERIAL.print("): ");
         PC_SERIAL.print(value); PC_SERIAL.print(" "); PC_SERIAL.print((char *) payload.getCodeUnits(code));
         PC_SERIAL.println();
     }
