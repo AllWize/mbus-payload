@@ -149,8 +149,8 @@ uint8_t getError(void);
 
 ## References
 
-* [The M-Bus: A Documentation Rev. 4.8 - Appendix](http://www.m-bus.com/mbusdoc/md8.php)
-* [Dedicated Application Layer (M-Bus)](http://www.m-bus.com/files/w4b21021.pdf) by H. Ziegler
+* [The M-Bus: A Documentation Rev. 4.8 - Appendix](https://m-bus.com/assets/downloads/MBDOC48.PDF)
+* [Dedicated Application Layer (M-Bus)](https://datasheet.datasheetarchive.com/originals/crawler/m-bus.com/ba82a2f0a320ffda901a2d9814f48c24.pdf) by H. Ziegler
 
 ## License
 
