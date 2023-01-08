@@ -190,6 +190,9 @@ static const vif_def_type vif_defs[MBUS_VIF_DEF_NUM] = {
   { MBUS_CODE::FABRICATION_NUMBER      , 0x78     , 1,   0},
   { MBUS_CODE::BUS_ADDRESS             , 0x7A     , 1,   0},
 
+  { MBUS_CODE::VOLUME_M3               , 0x933A   , 1,   -3},
+  { MBUS_CODE::VOLUME_M3               , 0x943A   , 1,   -2},
+
   // VIFE 0xFD
   { MBUS_CODE::CREDIT                  , 0xFD00   ,  4,  -3},
   { MBUS_CODE::DEBIT                   , 0xFD04   ,  4,  -3},
