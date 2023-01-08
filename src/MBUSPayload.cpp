@@ -248,7 +248,7 @@ uint8_t MBUSPayload::decode(uint8_t *buffer, uint8_t size, JsonArray& root) {
 
     // scaled value
     int8_t scalar = vif_defs[def].scalar + vif - vif_defs[def].base;
-    float scaled = value;
+    double scaled = value;
     for (int8_t i=0; i<scalar; i++) scaled *= 10;
     for (int8_t i=scalar; i<0; i++) scaled /= 10;
 
