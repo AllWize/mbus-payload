@@ -141,7 +141,7 @@ enum MBUS_ERROR {
 
 // VIF codes
 
-#define MBUS_VIF_DEF_NUM                  71
+#define MBUS_VIF_DEF_NUM                  73
 
 typedef struct {
   uint8_t code;
