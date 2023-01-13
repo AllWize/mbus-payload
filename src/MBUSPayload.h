@@ -141,7 +141,7 @@ enum MBUS_ERROR {
 
 // VIF codes
 
-#define MBUS_VIF_DEF_NUM                  71
+#define MBUS_VIF_DEF_NUM                  73
 
 typedef struct {
   uint8_t code;
@@ -189,6 +189,9 @@ static const vif_def_type vif_defs[MBUS_VIF_DEF_NUM] = {
   { MBUS_CODE::ACTUAL_DURATION_DAYS    , 0x77     , 1,   0},
   { MBUS_CODE::FABRICATION_NUMBER      , 0x78     , 1,   0},
   { MBUS_CODE::BUS_ADDRESS             , 0x7A     , 1,   0},
+
+  { MBUS_CODE::VOLUME_M3               , 0x933A   , 1,   -3},
+  { MBUS_CODE::VOLUME_M3               , 0x943A   , 1,   -2},
 
   // VIFE 0xFD
   { MBUS_CODE::CREDIT                  , 0xFD00   ,  4,  -3},
