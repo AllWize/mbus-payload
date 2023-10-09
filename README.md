@@ -1,6 +1,6 @@
 # Simple MBus Application Payload Encoder / Decoder
 
-[![version](https://img.shields.io/badge/version-1.0.0-brightgreen.svg)](CHANGELOG.md)
+[![version](https://img.shields.io/badge/version-1.0.1-brightgreen.svg)](CHANGELOG.md)
 [![travis](https://travis-ci.com/AllWize/mbus-payload.svg?branch=master)](https://travis-ci.com/AllWize/mbus-payload)
 [![codacy](https://img.shields.io/codacy/grade/9cc6a9ad619d4c539866300670103f5d/master.svg)](https://www.codacy.com/app/AllWize/mbus-payload/dashboard)
 [![license](https://img.shields.io/badge/license-LGPL--3.0-orange.svg)](LICENSE)

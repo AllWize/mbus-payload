@@ -3,6 +3,13 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.1] 2023-10-09
+### Added
+- Added VIFs for Honeywell Elster gasmeters
+
+### Changed
+- More precision for scaled values
+
 ## [1.0.0] 2019-12-19
 ### Fixed
 - Specify library dependencies in library.properties (thanks to @per1234)
