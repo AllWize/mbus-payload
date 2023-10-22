@@ -204,6 +204,17 @@ uint8_t MBUSPayload::decode(uint8_t *buffer, uint8_t size, JsonArray& root) {
     uint8_t dif = buffer[index++];
     bool bcd = ((dif & 0x08) == 0x08);
     uint8_t len = (dif & 0x07);
+    
+    // handle DIFE to prevent stumble if a DIFE is used
+    bool dife = ((dif & 0x80) == 0x80); //check if the first bit of DIF marked as "DIFE is following" 
+    while(dife) {
+      index++;
+      client.publish(String("busino/debug/decodeDIFE" + String(index-1)), String(buffer[index-1]).c_str());
+      dife = false;
+      dife = ((buffer[index-1] & 0x80) == 0x80); //check if after the DIFE another DIFE is following 
+      } 
+    //  End of DIFE handling
+    
     if ((len < 1) || (4 < len)) {
       _error = MBUS_ERROR::UNSUPPORTED_CODING;
       return 0;
