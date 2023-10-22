@@ -209,7 +209,6 @@ uint8_t MBUSPayload::decode(uint8_t *buffer, uint8_t size, JsonArray& root) {
     bool dife = ((dif & 0x80) == 0x80); //check if the first bit of DIF marked as "DIFE is following" 
     while(dife) {
       index++;
-      client.publish(String("busino/debug/decodeDIFE" + String(index-1)), String(buffer[index-1]).c_str());
       dife = false;
       dife = ((buffer[index-1] & 0x80) == 0x80); //check if after the DIFE another DIFE is following 
       } 
