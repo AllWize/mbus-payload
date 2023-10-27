@@ -171,7 +171,7 @@ uint8_t MBUSPayload::addField(uint8_t code, float value) {
   bool valid = (_getVIF(code, scalar) != 0xFF);
 
   // Now move down 
-  uint32_t scaled = round(value);
+  int32_t scaled = round(value);
   while ((scaled % 10) == 0) {
     scalar++;
     scaled /= 10;
@@ -213,6 +213,10 @@ uint8_t MBUSPayload::decode(uint8_t *buffer, uint8_t size, JsonArray& root) {
       dife = ((buffer[index-1] & 0x80) == 0x80); //check if after the DIFE another DIFE is following 
       } 
     //  End of DIFE handling
+
+    if(len==5){ // DIF len 5 = 4 Byte gleitkommazahl
+      len=4;
+    }
     
     if ((len < 1) || (4 < len)) {
       _error = MBUS_ERROR::UNSUPPORTED_CODING;
@@ -243,17 +247,37 @@ uint8_t MBUSPayload::decode(uint8_t *buffer, uint8_t size, JsonArray& root) {
     }
 
     // read value
-    uint32_t value = 0;
-    if (bcd) {
-      for (uint8_t i = 0; i<len; i++) {
-        uint8_t byte = buffer[index + len - i - 1];
-        value = (value * 100) + ((byte >> 4) * 10) + (byte & 0x0F);
-      }
-    } else {
-      for (uint8_t i = 0; i<len; i++) {
-        value = (value << 8) + buffer[index + len - i - 1];
-      }
+    int16_t value16 = 0;  // int16_t to notice negative values at 2 byte data
+    int32_t value = 0;
+    
+    if (len == 2){
+        if (bcd) {
+            for (uint8_t i = 0; i<len; i++) {
+                uint8_t byte = buffer[index + len - i - 1];
+                value16 = (value16 * 100) + ((byte >> 4) * 10) + (byte & 0x0F);
+                }
+            } 
+        else {
+            for (uint8_t i = 0; i<len; i++) {
+                value16 = (value16 << 8) + buffer[index + len - i - 1];
+                }
+            }
+        value = (int32_t)value16;            
     }
+    else{
+        
+        if (bcd) {
+            for (uint8_t i = 0; i<len; i++) {
+                uint8_t byte = buffer[index + len - i - 1];
+                value = (value * 100) + ((byte >> 4) * 10) + (byte & 0x0F);
+                }
+            } 
+        else {
+            for (uint8_t i = 0; i<len; i++) {
+                value = (value << 8) + buffer[index + len - i - 1];
+                }
+            }
+        }
     index += len;
 
     // scaled value
@@ -269,7 +293,8 @@ uint8_t MBUSPayload::decode(uint8_t *buffer, uint8_t size, JsonArray& root) {
     data["scalar"] = scalar;
     data["value_raw"] = value;
     data["value_scaled"] = scaled;
-    //data["units"] = String(getCodeUnits(vif_defs[def].code));
+    data["units"] = String(getCodeUnits(vif_defs[def].code));
+    data["name"] = String(getCodeName(vif_defs[def].code));
   
   }
 
@@ -347,6 +372,12 @@ const char * MBUSPayload::getCodeUnits(uint8_t code) {
     case MBUS_CODE::PRESSURE_BAR: 
       return "bar";
 
+    case MBUS_CODE::TIME_POINT_DATE:
+      return "Date";  
+
+    case MBUS_CODE::TIME_POINT_DATETIME:
+      return "Time";  
+
     case MBUS_CODE::BAUDRATE_BPS:
       return "bps";
 
@@ -374,6 +405,9 @@ const char * MBUSPayload::getCodeUnits(uint8_t code) {
     case MBUS_CODE::EXTERNAL_TEMPERATURE_F:
     case MBUS_CODE::TEMPERATURE_LIMIT_F:
       return "F";
+
+    case MBUS_CODE::UNSUPPORTED_X:
+      return "X";      
 
     default:
       break; 
@@ -461,6 +495,10 @@ const char * MBUSPayload::getCodeName(uint8_t code) {
     case MBUS_CODE::PRESSURE_BAR: 
       return "pressure";
 
+    case MBUS_CODE::TIME_POINT_DATE:
+    case MBUS_CODE::TIME_POINT_DATETIME:
+      return "time_point";
+
     case MBUS_CODE::BAUDRATE_BPS:
       return "baudrate";
 
@@ -497,6 +535,9 @@ const char * MBUSPayload::getCodeName(uint8_t code) {
     case MBUS_CODE::FIRMWARE_VERSION: 
       return "firmware_version";
 
+    case MBUS_CODE::SOFTWARE_VERSION: 
+      return "software_version"; //neu
+
     case MBUS_CODE::CUSTOMER: 
       return "customer";
   
@@ -524,7 +565,9 @@ const char * MBUSPayload::getCodeName(uint8_t code) {
     case MBUS_CODE::RESET_COUNTER: 
     case MBUS_CODE::CUMULATION_COUNTER: 
       return "counter";
-  
+
+    case MBUS_CODE::UNSUPPORTED_X: 
+      return "counter";  
     default:
         break; 
 
@@ -533,6 +576,7 @@ const char * MBUSPayload::getCodeName(uint8_t code) {
   return "";
 
 }
+
 // ----------------------------------------------------------------------------
 
 int8_t MBUSPayload::_findDefinition(uint32_t vif) {
