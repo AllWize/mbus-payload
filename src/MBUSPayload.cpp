@@ -436,15 +436,20 @@ uint8_t MBUSPayload::decode(uint8_t *buffer, uint8_t size, JsonArray& root) {
             	date[i] =  buffer[index + i];
 			}            
 			
-/*            if ((date[1] & 0x0F) > 12) {    // Time valid ?
+           if ((date[1] & 0x0F) > 12) {    // Time valid ?
                 //out_len = snprintf(output, output_size, "invalid");
                 break;
-            }*/
+            }
             out_len = snprintf(datestring, 10, "%02d%02d%02d",
                 ((date[0] & 0xE0) >> 5) | ((date[1] & 0xF0) >> 1), // year
                 date[1] & 0x0F, // mon
                 date[0] & 0x1F  // mday
             );
+            out_len = snprintf(datestring2, 10, "%02d-%02d-%02d",
+                ((date[0] & 0xE0) >> 5) | ((date[1] & 0xF0) >> 1), // year
+                date[1] & 0x0F, // mon
+                date[0] & 0x1F  // mday
+            );			
 			value = atof( datestring);
             break;
 		default:
