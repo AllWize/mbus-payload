@@ -26,7 +26,7 @@ along with the MBUSPayload library.  If not, see <http://www.gnu.org/licenses/>.
 #include <Arduino.h>
 #include <ArduinoJson.h>
 
-#define MBUS_DEFAULT_BUFFER_SIZE          32
+#define MBUS_DEFAULT_BUFFER_SIZE          510
 #define ARDUINO_FLOAT_MIN                 1e-6  // Assume 0 if less than this
 #define ARDUINO_FLOAT_DECIMALS            6     // 6 decimals is just below the limit for Arduino float maths
 
@@ -57,8 +57,8 @@ enum MBUS_CODE {
   TEMPERATURE_DIFF_K, 
   EXTERNAL_TEMPERATURE_C, 
   PRESSURE_BAR, 
-  //TIME_POINT_DATE,
-  //TIME_POINT_DATETIME,
+  TIME_POINT_DATE,
+  TIME_POINT_DATETIME,
   //HCA,
   AVG_DURATION_S,
   AVG_DURATION_MIN,
@@ -81,7 +81,7 @@ enum MBUS_CODE {
   MODEL_VERSION,
   HARDWARE_VERSION,
   FIRMWARE_VERSION,
-  //SOFTWARE_VERSION,
+  SOFTWARE_VERSION,
   //CUSTOMER_LOCATION,
   CUSTOMER,
   //ACCESS_CODE_USER,
@@ -114,6 +114,9 @@ enum MBUS_CODE {
   TEMPERATURE_LIMIT_F,
   TEMPERATURE_LIMIT_C,
   MAX_POWER_W,
+
+  // VIFE 0xFC
+  UNSUPPORTED_X,
   
 };
 
@@ -141,7 +144,7 @@ enum MBUS_ERROR {
 
 // VIF codes
 
-#define MBUS_VIF_DEF_NUM                  73
+#define MBUS_VIF_DEF_NUM                  77
 
 typedef struct {
   uint8_t code;
@@ -176,8 +179,8 @@ static const vif_def_type vif_defs[MBUS_VIF_DEF_NUM] = {
   { MBUS_CODE::TEMPERATURE_DIFF_K      , 0x60     , 4,  -3},
   { MBUS_CODE::EXTERNAL_TEMPERATURE_C  , 0x64     , 4,  -3},
   { MBUS_CODE::PRESSURE_BAR            , 0x68     , 4,  -3},
-  //{ MBUS_CODE::TIME_POINT_DATE         , 0x6C     , 1,   0},
-  //{ MBUS_CODE::TIME_POINT_DATETIME     , 0x6D     , 1,   0},
+  { MBUS_CODE::TIME_POINT_DATE         , 0x6C     , 1,   0},
+  { MBUS_CODE::TIME_POINT_DATETIME     , 0x6D     , 1,   0},
   //{ MBUS_CODE::HCA                     , 0x6E     , 1,   0},
   { MBUS_CODE::AVG_DURATION_S          , 0x70     , 1,   0},
   { MBUS_CODE::AVG_DURATION_MIN        , 0x71     , 1,   0},
@@ -203,7 +206,7 @@ static const vif_def_type vif_defs[MBUS_VIF_DEF_NUM] = {
   { MBUS_CODE::MODEL_VERSION           , 0xFD0C   ,  1,   0},
   { MBUS_CODE::HARDWARE_VERSION        , 0xFD0D   ,  1,   0},
   { MBUS_CODE::FIRMWARE_VERSION        , 0xFD0E   ,  1,   0},
-  //{ MBUS_CODE::SOFTWARE_VERSION        , 0xFD0F   ,  1,   0},
+  { MBUS_CODE::SOFTWARE_VERSION        , 0xFD0F   ,  1,   0},  //neu
   //{ MBUS_CODE::CUSTOMER_LOCATION       , 0xFD10   ,  1,   0},
   { MBUS_CODE::CUSTOMER                , 0xFD11   ,  1,   0},
   //{ MBUS_CODE::ACCESS_CODE_USER        , 0xFD12   ,  1,   0},
@@ -244,6 +247,9 @@ static const vif_def_type vif_defs[MBUS_VIF_DEF_NUM] = {
   { MBUS_CODE::TEMPERATURE_LIMIT_C     , 0xFB74   , 4,  -3},
   { MBUS_CODE::MAX_POWER_W             , 0xFB78   , 8,  -3},
 
+  // VIFE 0xFC
+  { MBUS_CODE::UNSUPPORTED_X           , 0xFC00   , 254,  0}
+
 };
 
 class MBUSPayload {
@@ -278,5 +284,4 @@ protected:
   uint8_t _error = NO_ERROR;
 
 };
-
 #endif
