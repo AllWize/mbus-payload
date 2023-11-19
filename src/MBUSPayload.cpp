@@ -203,6 +203,7 @@ uint8_t MBUSPayload::decode(uint8_t *buffer, uint8_t size, JsonArray& root) {
     // Decode DIF
     uint8_t dif = buffer[index++];
     uint8_t difLeast4bit = (dif & 0x0F);
+	uint8_t difFunctionField = ((dif & 0x30) >> 4);
     uint8_t len = 0;
     uint8_t dataCodingType = 0;
     /*
@@ -293,7 +294,23 @@ uint8_t MBUSPayload::decode(uint8_t *buffer, uint8_t size, JsonArray& root) {
             break;
 
     }
-    
+	char stringFunctionField[5];
+	switch(difFunctionField){
+		case 0:
+			strcpy(stringFunctionField, ""); //current
+			break;
+		case 1:
+			strcpy(stringFunctionField, "_max");
+			break;
+		case 2:
+			strcpy(stringFunctionField, "_min");
+			break;
+		case 3:
+			strcpy(stringFunctionField, "_err");
+			break;
+	}
+			
+			
     // handle DIFE to prevent stumble if a DIFE is used
     bool dife = ((dif & 0x80) == 0x80); //check if the first bit of DIF marked as "DIFE is following" 
     while(dife) {
@@ -477,8 +494,8 @@ uint8_t MBUSPayload::decode(uint8_t *buffer, uint8_t size, JsonArray& root) {
     data["value_raw"] = value;
     data["value_scaled"] = scaled;
     data["units"] = String(getCodeUnits(vif_defs[def].code));
-    data["name"] = String(getCodeName(vif_defs[def].code));
-	data["date"] = String(datestring2);  
+    data["name"] = String(getCodeName(vif_defs[def].code)+String(stringFunctionField));
+	// data["date"] = String(datestring2);  formatted dates, optional
   
   }
 
