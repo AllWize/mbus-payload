@@ -127,6 +127,7 @@ enum MBUS_CODING {
   BCD_4,
   BCD_6,
   BCD_8,
+  VARLEN
 };
 
 // Error codes
