@@ -192,7 +192,6 @@ uint8_t MBUSPayload::addField(uint8_t code, float value) {
 }
 
 uint8_t MBUSPayload::decode(uint8_t *buffer, uint8_t size, JsonArray& root) {
-
   uint8_t count = 0;
   uint8_t index = 0;
 
@@ -202,9 +201,22 @@ uint8_t MBUSPayload::decode(uint8_t *buffer, uint8_t size, JsonArray& root) {
 
     // Decode DIF
     uint8_t dif = buffer[index++];
-    bool bcd = ((dif & 0x08) == 0x08);
+    bool bcd;
     uint8_t len = (dif & 0x07);
-    if ((len < 1) || (4 < len)) {
+    bcd = ((dif & 0x08) == 0x08);
+    switch (len) {
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+        break;
+        
+    case 5: // var len or float
+        if (bcd) { // var len
+            break;
+        }
+        
+    default: // float, 48 & 64 bit not yet supported
       _error = MBUS_ERROR::UNSUPPORTED_CODING;
       return 0;
     }
@@ -225,6 +237,9 @@ uint8_t MBUSPayload::decode(uint8_t *buffer, uint8_t size, JsonArray& root) {
       _error = MBUS_ERROR::UNSUPPORTED_VIF;
       return 0;
     }
+    
+    if (dif == MBUS_CODING::VARLEN)
+        len = buffer[index++];
 
     // Check buffer overflow
     if (index + len > size) {
@@ -234,37 +249,65 @@ uint8_t MBUSPayload::decode(uint8_t *buffer, uint8_t size, JsonArray& root) {
 
     // read value
     uint32_t value = 0;
+    String valuestr;
     if (bcd) {
-      for (uint8_t i = 0; i<len; i++) {
-        uint8_t byte = buffer[index + len - i - 1];
-        value = (value * 100) + ((byte >> 4) * 10) + (byte & 0x0F);
+      if (dif == MBUS_CODING::VARLEN) {
+        bool prntabl = true;
+        for (uint8_t i = 0; i<len; i++) {
+          if (prntabl) {
+            prntabl = isprint(buffer[index + i]);
+            if (prntabl) {
+              valuestr += (char) buffer[index + i];
+              continue;
+            }
+            else {
+              i = 0;
+              valuestr.clear();
+            }
+          }
+
+          if (buffer[index + i] < 0x10)
+            valuestr += '0';
+          valuestr += String(buffer[index + i], HEX);
+        }
       }
-    } else {
+      else {
+        for (uint8_t i = 0; i<len; i++) {
+          uint8_t byte = buffer[index + len - i - 1];
+          value = (value * 100) + ((byte >> 4) * 10) + (byte & 0x0F);      
+        }
+      }
+    } 
+    else {
       for (uint8_t i = 0; i<len; i++) {
         value = (value << 8) + buffer[index + len - i - 1];
       }
     }
     index += len;
 
-    // scaled value
-    int8_t scalar = vif_defs[def].scalar + vif - vif_defs[def].base;
-    double scaled = value;
-    for (int8_t i=0; i<scalar; i++) scaled *= 10;
-    for (int8_t i=scalar; i<0; i++) scaled /= 10;
-
     // Init object
     JsonObject data = root.createNestedObject();
     data["vif"] = vif;
     data["code"] = vif_defs[def].code;
-    data["scalar"] = scalar;
-    data["value_raw"] = value;
-    data["value_scaled"] = scaled;
+    
+    if (dif == MBUS_CODING::VARLEN) {
+        data["value"] = valuestr;
+    }
+    else {
+        // scaled value
+        int8_t scalar = vif_defs[def].scalar + vif - vif_defs[def].base;
+        double scaled = value;
+        for (int8_t i=0; i<scalar; i++) scaled *= 10;
+        for (int8_t i=scalar; i<0; i++) scaled /= 10;
+        data["scalar"] = scalar;
+        data["value_raw"] = value;
+        data["value_scaled"] = scaled;
+    }
+
     //data["units"] = String(getCodeUnits(vif_defs[def].code));
-  
   }
 
   return count;
-
 }
 
 const char * MBUSPayload::getCodeUnits(uint8_t code) {
